@@ -5,51 +5,41 @@
   become: yes
 
   tasks:
-    - name: Create directory for apt keyrings if not exists
+    - name: Create directory for apt keyrings if not exists                           #Тут создаётся директория куда ьудет вписан GPG key
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
         mode: '0755'
 
-    - name: Download and install Kubernetes GPG key
+    - name: Download and install Kubernetes GPG key                                   #Вписываем откуда будем скачивать gpg key
       ansible.builtin.shell: |
         curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-    - name: Set proper permissions for GPG key
+    - name: Set proper permissions for GPG key                                        #Устанавливаем права на папку
       ansible.builtin.file:
         path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
         mode: '0644'
 
-    - name: Add Kubernetes repository
+    - name: Add Kubernetes                                                            #Добавляем репозиторя в /etc/apt/sources.list.d/kubernetes.list отсюда будут скачиваться пакеты
       ansible.builtin.copy:
         dest: /etc/apt/sources.list.d/kubernetes.list
         content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
         mode: '0644'
 
-    - name: Update apt package index
+    - name: Update apt package index                                                  #Денлаем update репозитория
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Install Kubernetes packages
+    - name: Install Kubernetes packages                                               #Устанавливаем нужные программы для работы с кластероами
       ansible.builtin.apt:
         name:
           - kubelet
           - kubeadm
           - kubectl
 
-    - name: Hold Kubernetes packages at current version
+    - name: Hold Kubernetes packages at current version                               #Фиксируем скаченную версию пакетов,что бы он не решил обновиться
       ansible.builtin.command:
         cmd: apt-mark hold kubelet kubeadm kubectl
         creates: /etc/apt/preferences.d/kubernetes.pref
-
-    - name: Verify installation
-      ansible.builtin.command:
-        cmd: kubectl version --client
-        register: kubectl_version
-      changed_when: false
-
-    - name: Show kubectl version
-      ansible.builtin.debug:
-        var: kubectl_version.stdout_lines
