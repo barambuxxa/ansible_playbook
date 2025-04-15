@@ -1,0 +1,30 @@
+---
+- name: Swapoff enable and reboot host
+  hosts: Cluster_k8s                                   #Used in a group
+  become: yes                                          #root rights
+
+  tasks:
+    - name: Ping test                                  #Run a ping to make the host available
+      ping:
+
+    - name: Disabled swap
+      ansible.builtin.shell: |                         #We declare a shell command that will contain a shutdown command. We write the result to swap_results
+        swapoff -a && echo "Swap отключён" || echo "Swap уже отключён или ошибка"
+      register: swap_result
+
+    - name: out results
+      debug:
+        var: swap_result.stdout                        #Output the result via debug
+
+    - name: Reboot host
+      ansible.builtin.reboot:
+        msg: "reboot Start"                            #Outputting a message to a remote host
+        connect_timeout: 5                             #connection timeout
+        reboot_timeout: 600                            #total reboot wait time
+        pre_reboot_delay: 0                            #pre-reboot delay
+        post_reboot_delay: 30                          #post-reboot delay before availability check
+
+    - name: Power on host
+      wait_for_connection:                             #Notification about host enabled
+        delay: 10
+        timeout: 300
