@@ -1,0 +1,47 @@
+---
+- name: Install Apache and Upload my Web Page
+  hosts: all
+  become: yes
+
+  vars:
+    source_file: ./MyWebSite/index.html
+    desti_file: /var/www/html
+
+  tasks:
+  - name: Check and print Linux family
+    debug: var=ansible_os_family
+
+  - block:     # =====Block for REDHAT======
+
+      - name: Install appache web Server for RedHat
+        yum: name=httpd state=latest
+
+      - name: copy myHomePage to Servers
+        copy: src={{ source_file }} dest={{ desti_file }} mode=0555
+        notify: Restart Apache RedHat
+
+      - name: Start webServer for RedHat
+        service: name=httpd state=started enabled=yes
+
+    when: ansible_os_family == "RedHat"
+
+  - block:     # =====Block for Linux======
+
+      - name: Install appache web Server for Linux
+        apt: name=apache2 state=latest
+
+      - name: copy myHomePage to Servers
+        copy: src={{ source_file }} dest={{ desti_file }} mode=0555
+        notify: Restart Apache Linux
+
+      - name: Start webServer for Linux
+        service: name=apache2 state=started enabled=yes
+
+    when: ansible_os_family == "Debian"
+
+  handlers:
+  - name: Restart Apache Linux
+    service: name=apache2 state=restarted
+
+  - name: Restart Apache RedHat
+    service: name=httpd state=restarted

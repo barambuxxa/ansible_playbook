@@ -1,0 +1,21 @@
+---
+
+- name: Ansible lesson 19
+  hosts: all
+  any_errors_fatal: true
+  become: yes
+
+  tasks:
+  - name: Task Number1
+    yum: name=treeeee state=latest
+    ignore_errors: yes
+
+  - name: Task Number2
+    shell: cat /home/ansible/myfile.txt
+    register: result
+
+  - debug:
+      var: results
+
+  - name: Task Number3
+    shell: echo Privet MIR!!!

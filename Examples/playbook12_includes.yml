@@ -1,0 +1,14 @@
+---
+
+- name: add ansible user
+  hosts: all
+  become: yes
+
+  vars:
+   mytext: "Privet ot Andrey Gurenich"
+
+  tasks:
+  - name: Ping test
+
+    include_tasks: create_folders.yml
+    include_tasks: create_files.yml

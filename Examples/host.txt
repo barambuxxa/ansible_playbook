@@ -1,0 +1,32 @@
+[STAGING_SERVERS_WEB]
+ansibleclient1 ansible_host=192.168.5.101	owner=Vasya
+
+[Server_RedHat]
+ansibleclient4 ansible_host=192.168.5.104	owner=Andrey
+
+[PROD_SERVERS_WEB]
+ansibleclient2 ansible_host=192.168.5.102	owner=Petya
+ansibleclient3 ansible_host=192.168.5.103	owner=Nikolay
+
+[ALL_LINUX:children]
+PROD_SERVERS_WEB
+STAGING_SERVERS_WEB
+
+[Cluster_k8s]
+master_node ansible_host=192.168.5.99
+work_node1 ansible_host=192.168.5.98
+work_node2 ansible_host=192.168.5.97
+
+[Cluster_k8s_new]
+work_node3 ansible_host=192.168.5.96
+
+[routers]
+rt0_254 ansible_host=192.168.0.254
+rt37_1 ansible_host=192.168.37.1
+rt5_254 ansible_host=192.168.5.254
+
+[routers:vars]
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_os=community.routeros.routeros
+ansible_user=ansible_bro
+ansible_ssh_port=1014
