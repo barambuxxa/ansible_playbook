@@ -1,3 +1,5 @@
+# Создаём 2 директории folder1 and folder2 с правами 0755
+
 ---
 - name: Create folder1
   file:

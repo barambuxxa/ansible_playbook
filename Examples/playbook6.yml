@@ -1,3 +1,5 @@
+# Тут мы тестируем варианты вывода текста
+
 ---
 - name: My Super Puper Playbook for Variables Lesson
   hosts: all

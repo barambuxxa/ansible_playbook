@@ -4,8 +4,8 @@
   become: yes
 
   tasks:
-  - name: Install apache webServer
+  - name: Install apache webServer                                  # Устанавливаем apache с помощью yum, последней версии. 
     yum: name=httpd2 state=latest
 
-  - name: Start Apache end Enable it on the boot
+  - name: Start Apache end Enable it on the boot                    # Запускаем эту службу
     service: name=httpd2 state=started enabled=yes

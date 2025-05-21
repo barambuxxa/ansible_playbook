@@ -1,3 +1,5 @@
+# Тут мы создаём 2 файла file1.txt и file2.txt с содержимым, то что онаписано в блоке content.
+
 ---
 - name: Create file1
   copy:

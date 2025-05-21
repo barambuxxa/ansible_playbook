@@ -1,3 +1,5 @@
+# Тут используется includes. Что бы запускать в ansible_playbook, другие playbookи. Запускаем пинг и 2 других playbook
+
 ---
 
 - name: add ansible user
