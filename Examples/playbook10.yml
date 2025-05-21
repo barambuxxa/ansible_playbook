@@ -1,17 +1,19 @@
+# Тут мы устанавливаем apache и грузим свою веб-страницу.
+
 ---
 - name: Install Apache and Upload my Web Page
   hosts: all
   become: yes
 
-  vars:
+  vars:                                                                                   # Прописываем переменные откуда берём нашу страницу и куда её будем добавлять
     source_folder: ./jobboard2
     desti_folder: /var/www/html
 
   tasks:
   - name: Check and print Linux family
-    debug: var=ansible_os_family
+    debug: var=ansible_os_family                                                          # Фиксируем какая у нас ОС
 
-  - block:     # =====Block for REDHAT======
+  - block:     # =====Block for REDHAT====== 
 
       - name: Install appache web Server for RedHat
         yum: name=httpd state=latest
@@ -32,14 +34,14 @@
     when: ansible_os_family == "Debian"
 
 
-  - name: Generate INDEX.html file
+  - name: Generate INDEX.html file                                                        # генерируем тут файл и выставляем на него правила. После чего перезагружаем веб-сервер на любой ОС
     template: src={{ source_folder }}/index.j2 dest={{ desti_folder }} mode=0555
     notify:
       - Restart Apache Linux
       - Restart Apache RedHat
 
 
-  - name: copy myHomePage to Servers
+  - name: copy myHomePage to Servers                                                      # Копируем страницы в нужную папку и перезапускаем веб-сервер
     copy: src={{ source_folder }}/{{ item }}  dest={{ desti_folder }} mode=0555
     loop:
       - "elements.html"
@@ -51,7 +53,7 @@
       - Restart Apache RedHat
 
 
-  handlers:
+  handlers:                                                                               # Расписываются handlers
   - name: Restart Apache Linux
     service: name=apache2 state=restarted
 

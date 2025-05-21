@@ -1,23 +1,25 @@
+# Тут устанавливается веб-сервер и копируется на него страница
+
 ---
 - name: Install Apache and Upload my Web Page
   hosts: all
   become: yes
 
-  vars:
+  vars:                                                                       # Прописываем откуда брать страницу и куда её копировать
     source_file: ./MyWebSite/index.html
     desti_file: /var/www/html
 
   tasks:
-  - name: Install appache web Server
+  - name: Install apache web Server                                          # Устанавливаем apache
   - apt: name=apache2 state=latest
 
-  - name: copy myHomePage to Servers
+  - name: copy myHomePage to Servers                                         # Копируем нашу страницу в нужное место и делаем перезапуск веб-сервера (handlers)
     copy: src={{ source_file }} dest={{ desti_file }} mode=0555
     notify: Restart Apache
 
-  - name: Start webServer and make it enable on boot
+  - name: Start webServer and make it enable on boot                         # Стартуем сервер
     service: name=apache2 state=started enabled=yes
 
   handlers:
-  - name: Restart Apache
+  - name: Restart Apache                                                     # Перезапускаем сервер
     service: name=apache2 state=restarted

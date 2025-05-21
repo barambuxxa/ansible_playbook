@@ -1,21 +1,21 @@
 ---
-
+# Тут тестируется игнорирование ошибки, которая возникает в Task. В данном примере мы пытаемся установить пакет который не существует. 
 - name: Ansible lesson 19
   hosts: all
   any_errors_fatal: true
   become: yes
 
   tasks:
-  - name: Task Number1
+  - name: Task Number1                        # Устанавливаем пакет который treeeee, которого не существует и получаем ошибку. Но идёт игнорирование благодаря ignore_errors: yes
     yum: name=treeeee state=latest
     ignore_errors: yes
 
-  - name: Task Number2
+  - name: Task Number2                        # записываем в result значение файла myfile.txt
     shell: cat /home/ansible/myfile.txt
     register: result
 
-  - debug:
+  - debug:                                    # Выводим на экран значение result
       var: results
 
-  - name: Task Number3
+  - name: Task Number3                        # Выводим на удалённый компьютер Privet MIR
     shell: echo Privet MIR!!!

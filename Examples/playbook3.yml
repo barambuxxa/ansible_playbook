@@ -1,3 +1,5 @@
+# Устанавливаем apache веб-сервер, через apt, последней версии. И запускаем жанную службу после установки
+
 ---
 - name: Install default Apache Web Server
   hosts: all
