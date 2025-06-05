@@ -1,0 +1,22 @@
+---
+- name: Delete files
+  hosts: WINDOWS_CLIENTS
+
+  tasks:
+
+    - name: Check folder GrandAuto
+      ansible.windows.win_stat:
+        path: C:\GrandAuto
+      register: grandauto_dir
+
+    - name: Delete files
+      ansible.windows.win_file:
+        path: C:\GrandAuto\{{ item }}
+        state: absent
+      loop:
+        - "Update3.log"
+        - "VerInfo.cfg"
+        - "Update3.cfg"
+        - "Update3.dll"
+        - "Update3.txt"
+      when: grandauto_dir.stat.exists
